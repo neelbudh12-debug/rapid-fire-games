@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Game Hub</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#search {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px;
+  width: 300px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+#categories {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #222;
+  color: white;
+}
+
+button:hover {
+  background: #444;
+}
+
+#games {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 15px;
+  padding: 20px;
+}
+
+.game {
+  background: #1c1c1c;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.game:hover {
+  transform: scale(1.05);
+  background: #2a2a2a;
+}
+
+.game img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+footer {
+  text-align: center;
+  margin: 30px;
+  color: gray;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Game Hub</h1>
+
+<input type="text" id="search" placeholder="Search games...">
+
+<div id="categories"></div>
+<div id="games"></div>
+
+<footer>
+  Created by YOUR_NAME_HERE
+</footer>
+
+<script>
+const games = [
+{ title:"Slope", path:"g/slope", image:"images/slope.png", category:"RACING" },
+{ title:"Retro Bowl", path:"g/retro-bowl", image:"images/retrobowl.jpg", category:"SPORTS" },
+{ title:"DeadShot.io", path:"g/deadshotio", image:"images/deadshotio.png", category:"ACTION" },
+{ title:"Gunspin", path:"g/gunspin", image:"images/gunspin.png", category:"ACTION" },
+{ title:"1v1.lol", path:"g/1v1lol", image:"https://play-lh.googleusercontent.com/QYGRIDJbyVO7L7jH8CwiKJ4NumTGgcTVqU3ITooLWxro-eeNns1RZ0uwGGFe-r8M4co", category:"ACTION" },
+{ title:"Block Blast", path:"g/blockblast", image:"images/blockblast.png", category:"PUZZLE" },
+{ title:"Idle Breakout", path:"g/idle-breakout", image:"images/idlebreakout.png", category:"IDLE" },
+{ title:"Learn To Fly", path:"g/learntofly", image:"g/learntofly/1/icon.png", category:"ARCADE" },
+{ title:"Baldi's Basics", path:"g/baldisbasics", image:"images/baldisbasics.png", category:"HORROR" },
+{ title:"Gun Mayhem", path:"g/gunmayhem", image:"images/gunmayhem.png", category:"ACTION" },
+{ title:"Gun Mayhem 2", path:"g/gunmayhem2", image:"images/gunmayhem2.png", category:"ACTION" },
+{ title:"Wall Smash", path:"g/wallsmash", image:"images/wallsmash.png", category:"ARCADE" },
+{ title:"FNAF 1", path:"g/fnaf", image:"images/fnaf.png", category:"HORROR" },
+{ title:"FNAF 2", path:"g/fnaf-2", image:"images/fnaf2.png", category:"HORROR" },
+{ title:"Drift Boss", path:"g/driftboss", image:"images/driftboss.png", category:"RACING" },
+{ title:"Jack Smith", path:"g/jacksmith", image:"images/jacksmith.png", category:"ADVENTURE" },
+{ title:"Minecraft", path:"g/mc", image:"images/mc.png", category:"ADVENTURE" },
+{ title:"Bloons TD5", path:"g/btd5", image:"images/btd5.png", category:"STRATEGY" },
+{ title:"Run 2", path:"g/run2", image:"images/run2.png", category:"ARCADE" },
+{ title:"Run 3", path:"g/run3", image:"images/run3.png", category:"ARCADE" },
+{ title:"Plants V Zombies", path:"g/pvz", image:"images/pvz.png", category:"STRATEGY" },
+{ title:"OVO", path:"g/ovo", image:"images/ovo.jpg", category:"PLATFORMER" },
+{ title:"Subway Surfers", path:"g/subway-surfers", image:"https://img.poki.com/cdn-cgi/image/quality=78,width=314,height=314,fit=cover,f=auto/81a0a3f18cf0ee129e56edb50fc52c3b.png", category:"ENDLESS RUNNER" },
+{ title:"MotoX3M", path:"g/motox3m", image:"images/motocross.png", category:"RACING" },
+{ title:"Cookie Clicker", path:"g/cookieclicker", image:"https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok", category:"IDLE" },
+{ title:"Geometry Dash", path:"g/geodash", image:"images/geodash.jpg", category:"PLATFORMER" }
+];
+
+let currentCategory = "ALL";
+
+function renderGames() {
+  const container = document.getElementById("games");
+  container.innerHTML = "";
+
+  const search = document.getElementById("search").value.toLowerCase();
+
+  games.forEach(game => {
+    if ((currentCategory === "ALL" || game.category === currentCategory) &&
+        game.title.toLowerCase().includes(search)) {
+
+      const div = document.createElement("div");
+      div.className = "game";
+      div.innerHTML = `
+        <img src="${game.image}">
+        <h4>${game.title}</h4>
+      `;
+
+      div.onclick = () => openGame(game.path);
+      container.appendChild(div);
+    }
+  });
+}
+
+function renderCategories() {
+  const cats = ["ALL", ...new Set(games.map(g => g.category))];
+  const container = document.getElementById("categories");
+
+  cats.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.innerText = cat;
+    btn.onclick = () => {
+      currentCategory = cat;
+      renderGames();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function openGame(path) {
+  const win = window.open("about:blank", "_blank");
+
+  win.document.write(`
+    <html>
+      <head>
+        <style>
+          body { margin:0; overflow:hidden; background:black; }
+          iframe { width:100%; height:100%; border:none; }
+          #fps {
+            position:fixed;
+            top:10px;
+            right:15px;
+            color:lime;
+            font-family:monospace;
+            background:rgba(0,0,0,0.6);
+            padding:5px 10px;
+            border-radius:6px;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="fps">FPS: 0</div>
+        <iframe src="${location.origin}/${path}"></iframe>
+        <script>
+          let last = performance.now();
+          let frames = 0;
+          function loop(){
+            frames++;
+            const now = performance.now();
+            if(now-last>=1000){
+              document.getElementById("fps").innerText="FPS: "+frames;
+              frames=0;
+              last=now;
+            }
+            requestAnimationFrame(loop);
+          }
+          loop();
+        <\/script>
+      </body>
+    </html>
+  `);
+
+  win.document.close();
+}
+
+document.getElementById("search").addEventListener("input", renderGames);
+
+renderCategories();
+renderGames();
+</script>
+
+</body>
+</html>
